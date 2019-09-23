@@ -140,7 +140,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
     &theApp
   );
 
-  //try
+  try
   {
     theApp.Initialize(hwnd, DXGI_FORMAT_R8G8B8A8_UNORM, false);
 
@@ -160,9 +160,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
     theApp.Terminate();
     return static_cast<int>(msg.wParam);
   }
-  //catch (std::runtime_error e)
+  catch (std::runtime_error e)
   {
-    //OutputDebugStringA(e.what());
+    OutputDebugStringA(e.what());
     OutputDebugStringA("\n");
   }
   return 0;
