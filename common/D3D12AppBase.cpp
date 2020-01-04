@@ -1,6 +1,9 @@
 ﻿#include "D3D12AppBase.h"
 #include <exception>
 #include <fstream>
+#if _MSC_VER > 1922 && !defined(_SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING)
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#endif
 #include <experimental/filesystem>
 
 #include "D3D12BookUtil.h"
@@ -493,7 +496,7 @@ HRESULT CompileShaderFromFile(
 {
   using namespace std::experimental::filesystem;
   path filePath(fileName);
-  std::ifstream infile(filePath);
+  std::ifstream infile(filePath, std::ifstream::binary);
   std::vector<char> srcData;
   if (!infile)
     throw std::runtime_error("shader not found");
