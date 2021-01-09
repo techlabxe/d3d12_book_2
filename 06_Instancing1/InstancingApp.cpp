@@ -256,8 +256,9 @@ void InstancingApp::Render()
     dsv, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
   // •`‰ææ‚ðƒZƒbƒg
-  m_commandList->OMSetRenderTargets(1, &(D3D12_CPU_DESCRIPTOR_HANDLE)rtv,
-    FALSE, &(D3D12_CPU_DESCRIPTOR_HANDLE)dsv);
+  D3D12_CPU_DESCRIPTOR_HANDLE handleRtvs[] = { rtv };
+  D3D12_CPU_DESCRIPTOR_HANDLE handleDsv = dsv;
+  m_commandList->OMSetRenderTargets(1, handleRtvs, FALSE, &handleDsv);
 
   auto viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, float(m_width), float(m_height));
   auto scissorRect = CD3DX12_RECT(0, 0, LONG(m_width), LONG(m_height));
@@ -338,11 +339,13 @@ InstancingApp::Buffer InstancingApp::CreateBufferResource(D3D12_HEAP_TYPE type, 
 {
   Buffer ret;
   HRESULT hr;
-  
+
+  const auto heapProps = CD3DX12_HEAP_PROPERTIES(type);
+  const auto resDesc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);
   hr = m_device->CreateCommittedResource(
-    &CD3DX12_HEAP_PROPERTIES(type),
+    &heapProps,
     D3D12_HEAP_FLAG_NONE,
-    &CD3DX12_RESOURCE_DESC::Buffer(bufferSize),
+    &resDesc,
     state,
     nullptr,
     IID_PPV_ARGS(&ret)

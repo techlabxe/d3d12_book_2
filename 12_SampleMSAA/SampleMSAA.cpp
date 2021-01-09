@@ -196,8 +196,9 @@ void SampleMSAAApp::RenderToMSAA()
     m_hMsaaDSV, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
   // •`‰ææ‚ðƒZƒbƒg
-  m_commandList->OMSetRenderTargets(1, &(D3D12_CPU_DESCRIPTOR_HANDLE)m_hMsaaRTV,
-    FALSE, &(D3D12_CPU_DESCRIPTOR_HANDLE)m_hMsaaDSV);
+  D3D12_CPU_DESCRIPTOR_HANDLE handleRtvs[] = { m_hMsaaRTV };
+  D3D12_CPU_DESCRIPTOR_HANDLE handleDsv = m_hMsaaDSV;
+  m_commandList->OMSetRenderTargets(1, handleRtvs, FALSE, &handleDsv);
 
   auto viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, float(m_width), float(m_height));
   auto scissorRect = CD3DX12_RECT(0, 0, LONG(m_width), LONG(m_height));
@@ -495,8 +496,9 @@ void SampleMSAAApp::PrepareMsaaResource()
     1, 1, levels.SampleCount
   );
   msaaColorDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+  const auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
   auto hr = m_device->CreateCommittedResource(
-    &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+    &heapProps,
     D3D12_HEAP_FLAG_NONE,
     &msaaColorDesc,
     D3D12_RESOURCE_STATE_RESOLVE_SOURCE,
@@ -517,7 +519,7 @@ void SampleMSAAApp::PrepareMsaaResource()
   clearDepth.DepthStencil.Depth = 1.0f;
 
   hr = m_device->CreateCommittedResource(
-    &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+    &heapProps,
     D3D12_HEAP_FLAG_NONE,
     &msaaDepthDesc,
     D3D12_RESOURCE_STATE_DEPTH_WRITE,

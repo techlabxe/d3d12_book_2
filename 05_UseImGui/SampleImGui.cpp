@@ -54,8 +54,9 @@ void SampleImGui::Render()
     dsv, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
   // •`‰ææ‚ðƒZƒbƒg
-  m_commandList->OMSetRenderTargets(1, &(D3D12_CPU_DESCRIPTOR_HANDLE)rtv,
-    FALSE, &(D3D12_CPU_DESCRIPTOR_HANDLE)dsv);
+  D3D12_CPU_DESCRIPTOR_HANDLE handleRtvs[] = { rtv };
+  D3D12_CPU_DESCRIPTOR_HANDLE handleDsv = dsv;
+  m_commandList->OMSetRenderTargets(1, handleRtvs, FALSE, &handleDsv);
 
   ID3D12DescriptorHeap* heaps[] = { m_heap->GetHeap().Get() };
   m_commandList->SetDescriptorHeaps(_countof(heaps), heaps);

@@ -42,8 +42,9 @@ void RenderToTextureApp::Prepare()
   clearDepth.DepthStencil.Stencil = 0;
 
   HRESULT hr;
+  const auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
   hr = m_device->CreateCommittedResource(
-    &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+    &heapProps,
     D3D12_HEAP_FLAG_NONE,
     &colorTexDesc,
     D3D12_RESOURCE_STATE_RENDER_TARGET,
@@ -51,8 +52,9 @@ void RenderToTextureApp::Prepare()
     IID_PPV_ARGS(&m_colorRT)
   );
   ThrowIfFailed(hr, "CreateCommittedResource(Color)");
+
   hr = m_device->CreateCommittedResource(
-    &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+    &heapProps,
     D3D12_HEAP_FLAG_NONE,
     &depthTexDesc,
     D3D12_RESOURCE_STATE_DEPTH_WRITE,
@@ -195,8 +197,9 @@ void RenderToTextureApp::RenderToMain()
     dsv, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
   // •`‰ææ‚ðƒZƒbƒg
-  m_commandList->OMSetRenderTargets(1, &(D3D12_CPU_DESCRIPTOR_HANDLE)rtv,
-    FALSE, &(D3D12_CPU_DESCRIPTOR_HANDLE)dsv);
+  D3D12_CPU_DESCRIPTOR_HANDLE handleRtvs[] = { rtv };
+  D3D12_CPU_DESCRIPTOR_HANDLE handleDsv = dsv;
+  m_commandList->OMSetRenderTargets(1, handleRtvs, FALSE, &handleDsv);
 
   auto viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, float(m_width), float(m_height));
   auto scissorRect = CD3DX12_RECT(0, 0, LONG(m_width), LONG(m_height));

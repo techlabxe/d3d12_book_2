@@ -217,8 +217,9 @@ void D3D12AppBase::Render()
     dsv, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
   // 描画先をセット
-  m_commandList->OMSetRenderTargets(1, &(D3D12_CPU_DESCRIPTOR_HANDLE)rtv, 
-    FALSE, &(D3D12_CPU_DESCRIPTOR_HANDLE)dsv);
+  D3D12_CPU_DESCRIPTOR_HANDLE handleRtvs[] = { rtv };
+  D3D12_CPU_DESCRIPTOR_HANDLE handleDsv = dsv;
+  m_commandList->OMSetRenderTargets(1, handleRtvs, FALSE, &handleDsv);
 
   ID3D12DescriptorHeap* heaps[] = { m_heap->GetHeap().Get() };
   m_commandList->SetDescriptorHeaps(_countof(heaps), heaps);
@@ -246,8 +247,9 @@ D3D12AppBase::ComPtr<ID3D12Resource1> D3D12AppBase::CreateResource(
 {
   HRESULT hr;
   ComPtr<ID3D12Resource1> ret;
+  const auto heapProps = CD3DX12_HEAP_PROPERTIES(heapType);
   hr = m_device->CreateCommittedResource(
-    &CD3DX12_HEAP_PROPERTIES(heapType),
+    &heapProps,
     D3D12_HEAP_FLAG_NONE,
     &desc,
     resourceStates,
@@ -374,9 +376,10 @@ void D3D12AppBase::CreateDefaultDepthBuffer(int width, int height)
   depthClearValue.DepthStencil.Depth = 1.0f;
   depthClearValue.DepthStencil.Stencil = 0;
 
+  const auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
   HRESULT hr;
   hr = m_device->CreateCommittedResource(
-    &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+    &heapProps,
     D3D12_HEAP_FLAG_NONE,
     &depthBufferDesc,
     D3D12_RESOURCE_STATE_DEPTH_WRITE,

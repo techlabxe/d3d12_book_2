@@ -33,7 +33,7 @@
     <ClInclude Include="..\common\d3dx12.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="RenderToTextureApp.h">
+    <ClInclude Include="SampleMSAA.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,10 +44,10 @@
     <ClCompile Include="..\common\D3D12AppBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="RenderToTextureApp.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="SampleMSAA.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

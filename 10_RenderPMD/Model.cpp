@@ -301,7 +301,8 @@ void Model::Prepare(D3D12AppBase* app, const char* filename)
     bone->SetInitialTranslation(translation);
 
     // バインド逆行列をグローバル位置より求める.
-    auto m = XMMatrixTranslationFromVector(XMLoadFloat3(&boneSrc.getPosition()));
+    auto bonePos = boneSrc.getPosition();
+    auto m = XMMatrixTranslationFromVector(XMLoadFloat3(&bonePos));
     bone->SetInvBindMatrix(XMMatrixInverse(nullptr, m));
 
     m_bones.push_back(bone);
